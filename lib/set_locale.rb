@@ -1,31 +1,35 @@
+require 'set_locale/strategies/base'
 require 'set_locale/strategies/parameter'
 require 'set_locale/strategies/cookie'
+require 'set_locale/strategies/http_header'
+require 'set_locale/strategies/user_preference'
 
 require "set_locale/engine"
 
 module SetLocale
 
-  DEFAULT_STRATEGIES = [:parameter, :cookie]
-
   mattr_accessor :strategies
 
   def self.initialize
-    ensure_strategies_are_set
-    constantize_strategies
-  end
-
-private
-
-  def self.ensure_strategies_are_set
-    # Fall back to the defeult list of strategies unless
+    # Fall back to the default list of strategies unless
     # specified otherwise, in an initializer
-    SetLocale.strategies ||= SetLocale::DEFAULT_STRATEGIES
+    SetLocale.strategies ||= default_strategies
   end
 
-  def self.constantize_strategies
-    @@strategies = SetLocale.strategies.inject([]) do |strategies, strategy|
-      strategies << "SetLocale::Strategies::#{strategy.to_s.capitalize}".constantize
+  # Find and return the first valid locale
+  def self.from_strategies(controller)
+    strategies.each do |strategy|
+      strategy.controller = controller
+      return strategy.valid_locale if strategy.valid_locale
     end
+
+    nil
   end
 
+  def self.default_strategies
+    [
+      Strategies::Parameter.new,
+      Strategies::Cookie.new
+    ]
+  end
 end

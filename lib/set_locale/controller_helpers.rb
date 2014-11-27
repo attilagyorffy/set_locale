@@ -6,7 +6,7 @@ module SetLocale
     end
 
     def set_locale
-      I18n.locale = SetLocale.from_strategies || I18n.default_locale
+      I18n.locale = SetLocale.from_strategies(self) || I18n.default_locale
     end
   end
 end
