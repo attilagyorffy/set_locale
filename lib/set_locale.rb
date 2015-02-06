@@ -9,11 +9,15 @@ require "set_locale/engine"
 module SetLocale
 
   mattr_accessor :strategies
+  mattr_accessor :controller
 
   def self.initialize
     # Fall back to the default list of strategies unless
     # specified otherwise, in an initializer
     SetLocale.strategies ||= default_strategies
+
+    # Locale will be set before actions in this controller
+    SetLocale.controller ||= "ApplicationController"
   end
 
   # Find and return the first valid locale
