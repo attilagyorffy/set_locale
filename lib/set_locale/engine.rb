@@ -5,12 +5,12 @@ module SetLocale
     config.after_initialize do |app|
       SetLocale.initialize
 
-      ApplicationController.send :include, SetLocale::ControllerHelpers
+      SetLocale.controller.constantize.send :include, SetLocale::ControllerHelpers
 
       # Make sure SetLocale::ContollerHelpers gets included in ApplicationController
       # in case Rails would auto-reload ApplicationController during a request in development
       ActionDispatch::Reloader.to_prepare do
-        ApplicationController.send :include, SetLocale::ControllerHelpers
+        SetLocale.controller.constantize.send :include, SetLocale::ControllerHelpers
       end
     end
   end

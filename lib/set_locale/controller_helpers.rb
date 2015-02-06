@@ -1,8 +1,8 @@
 module SetLocale
   module ControllerHelpers
 
-    def self.included(application_controller)
-      application_controller.before_action :set_locale
+    def self.included(controller)
+      controller.before_action :set_locale
     end
 
     def set_locale
